@@ -49,6 +49,6 @@ jobs:
         id: build_image
         with:
           image: ${{ env.IMAGE_NAMESPACE }}
-          tags: "$GITHUB_OUTPUT"
+          tags: "${{ steps.image_tags.GITHUB_OUTPUT }}"
           containerfiles: |
             ./Containerfile
