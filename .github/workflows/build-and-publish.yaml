@@ -41,8 +41,8 @@ jobs:
         id: image_tags
         run: |
           echo -n ::set-output name=IMAGE_TAGS::
-          VERSION=$(grep 'VERSION:' VERSION | awk -F: '{print $2'})
-          REVISION=$(grep 'REVISION:' VERSION | awk -F: '{print $2'})
+          VERSION=$(grep 'VERSION=' VERSION | awk -F= '{print $2'})
+          REVISION=$(grep 'REVISION=' VERSION | awk -F= '{print $2'})
           if [[ "${REVISION}" =~ "dev." ]] ; then
             echo "latest"
           else 
