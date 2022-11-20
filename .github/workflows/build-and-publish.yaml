@@ -37,7 +37,7 @@ jobs:
       - name: Get image tags
         id: image_tags
         run: |
-          echo -n ::set-output name=IMAGE_TAGS::
+          echo -n name=IMAGE_TAGS >> $GITHUB_OUTPUT
           TAGS=('latest')
           if [[ "${GITHUB_REF}" =~ refs/tags/(.*) ]]; then
               TAGS+=("git-${BASH_REMATCH[1]}")
