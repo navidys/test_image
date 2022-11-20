@@ -3,5 +3,5 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("test image")
+	fmt.Println("test image version 0.1.0-dev")
 }
