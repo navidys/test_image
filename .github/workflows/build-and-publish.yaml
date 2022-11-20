@@ -37,7 +37,7 @@ jobs:
       - name: Get image tags
         id: image_tags
         run: |
-          echo -n name=IMAGE_TAGS >> $GITHUB_OUTPUT
+          echo -n ::set-output name=IMAGE_TAGS::
           TAGS=('latest')
           if [[ "${GITHUB_REF}" =~ refs/tags/(.*) ]]; then
               TAGS+=("git-${BASH_REMATCH[1]}")
@@ -49,6 +49,6 @@ jobs:
         id: build_image
         with:
           image: ${{ env.IMAGE_NAMESPACE }}
-          tags: "${{ steps.image_tags.GITHUB_OUTPUT }}"
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
           containerfiles: |
             ./Containerfile
