@@ -1,0 +1,54 @@
+---
+name: Build and Publish
+
+on:
+  push:
+    # branches:
+    #  - main
+  workflow_dispatch:
+      # Allows you to run this workflow manually from the Actions tab
+    inputs:
+      tag:
+        description: 'Tag to attach to image'     
+        required: true
+jobs:
+  build-and-publish:
+    name: Publish container image
+    env:
+      IMAGE_REGISTRY: quay.io/navidys
+      IMAGE_NAMESPACE: ${{ github.event.repository.name }}
+
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+
+        with:
+          go-version: "1.18"
+
+      - name: Build binary
+        run: |
+          go build
+          ./test_image
+      
+      - name: Get image tags
+        id: image_tags
+        run: |
+          echo -n ::set-output name=IMAGE_TAGS::
+          TAGS=('latest')
+          if [[ "${GITHUB_REF}" =~ refs/tags/(.*) ]]; then
+              TAGS+=("git-${BASH_REMATCH[1]}")
+          fi
+          ( IFS=$','; echo "${TAGS[*]}" )
+
+      - name: Build container image
+        uses: redhat-actions/buildah-build@v2
+        id: build_image
+        with:
+          image: ${{ env.IMAGE_NAMESPACE }}
+          tags: "${{ steps.image_tags.outputs.IMAGE_TAGS }}"
+          containerfiles: |
+            ./Containerfile
